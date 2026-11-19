@@ -43,3 +43,11 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Konfigurasi Firebase lokal dibuat oleh flutterfire configure.
+/android/app/google-services.json
+/firebase.json
+**/GoogleService-Info.plist
+
+# Tangkapan layar Flutter lokal.
+/flutter_*.png

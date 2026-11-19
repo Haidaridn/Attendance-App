@@ -6,6 +6,7 @@ class LogoutDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      icon: const Icon(Icons.logout_rounded),
       title: const Text('Keluar dari akun?'),
       content: const Text('Anda perlu masuk kembali untuk mencatat presensi.'),
       actions: [

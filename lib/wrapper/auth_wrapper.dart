@@ -46,6 +46,7 @@ class AuthWrapper extends StatelessWidget {
           return LoginScreen(authServices: authServices);
         }
         return HomeScreen(
+          key: ValueKey(snapshot.data!.uid),
           authServices: authServices,
           attendanceService: attendanceService,
           photoStorage: photoStorage,

@@ -69,6 +69,7 @@ class CameraButton extends StatelessWidget {
     return await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
+            icon: const Icon(Icons.camera_alt_outlined),
             title: const Text('Izin kamera diperlukan'),
             content: const Text(
               'Foto wajib untuk mencatat presensi. Berikan izin kamera untuk '
@@ -96,6 +97,7 @@ class CameraButton extends StatelessWidget {
     return showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
+        icon: const Icon(Icons.camera_alt_outlined),
         title: const Text('Aktifkan izin kamera'),
         content: const Text(
           'Izin kamera dinonaktifkan permanen. Buka pengaturan aplikasi dan '

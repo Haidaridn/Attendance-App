@@ -62,55 +62,75 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 480),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    AuthTextField(
-                      controller: _emailController,
-                      label: 'Email',
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) =>
-                          value == null || value.trim().isEmpty
-                          ? 'Email wajib diisi.'
-                          : null,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const AuthHeader(
+                    title: 'Mulai dengan akun Anda',
+                    description: 'Daftar untuk mencatat presensi harian Anda.',
+                  ),
+                  const SizedBox(height: 28),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            AuthTextField(
+                              controller: _emailController,
+                              label: 'Email',
+                              keyboardType: TextInputType.emailAddress,
+                              validator: (value) =>
+                                  value == null || value.trim().isEmpty
+                                  ? 'Email wajib diisi.'
+                                  : null,
+                            ),
+                            const SizedBox(height: 16),
+                            AuthTextField(
+                              controller: _passwordController,
+                              label: 'Kata sandi',
+                              obscureText: _obscurePassword,
+                              onToggleVisibility: () => setState(
+                                () => _obscurePassword = !_obscurePassword,
+                              ),
+                              validator: (value) =>
+                                  value == null || value.length < 6
+                                  ? 'Kata sandi minimal 6 karakter.'
+                                  : null,
+                            ),
+                            const SizedBox(height: 16),
+                            AuthTextField(
+                              controller: _confirmationController,
+                              label: 'Konfirmasi kata sandi',
+                              obscureText: _obscurePassword,
+                              validator: (value) =>
+                                  value != _passwordController.text
+                                  ? 'Konfirmasi kata sandi tidak cocok.'
+                                  : null,
+                            ),
+                            const SizedBox(height: 24),
+                            FilledButton(
+                              onPressed: _isLoading ? null : _register,
+                              child: _isLoading
+                                  ? const SizedBox.square(
+                                      dimension: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : const Text('Daftar'),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    const SizedBox(height: 16),
-                    AuthTextField(
-                      controller: _passwordController,
-                      label: 'Kata sandi',
-                      obscureText: _obscurePassword,
-                      onToggleVisibility: () =>
-                          setState(() => _obscurePassword = !_obscurePassword),
-                      validator: (value) => value == null || value.length < 6
-                          ? 'Kata sandi minimal 6 karakter.'
-                          : null,
-                    ),
-                    const SizedBox(height: 16),
-                    AuthTextField(
-                      controller: _confirmationController,
-                      label: 'Konfirmasi kata sandi',
-                      obscureText: _obscurePassword,
-                      validator: (value) => value != _passwordController.text
-                          ? 'Konfirmasi kata sandi tidak cocok.'
-                          : null,
-                    ),
-                    const SizedBox(height: 24),
-                    FilledButton(
-                      onPressed: _isLoading ? null : _register,
-                      child: _isLoading
-                          ? const SizedBox.square(
-                              dimension: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Text('Daftar'),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

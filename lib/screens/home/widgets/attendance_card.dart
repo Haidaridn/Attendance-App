@@ -17,16 +17,46 @@ class AttendanceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final currentRecord = record;
     if (currentRecord == null) {
-      return const Card(
+      return Card(
         child: Padding(
-          padding: EdgeInsets.all(24),
-          child: Row(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.schedule_outlined, size: 32),
-              SizedBox(width: 16),
-              Expanded(child: Text('Belum ada presensi hari ini')),
+              Text(
+                DateFormat('EEEE, d MMMM y', 'id_ID').format(DateTime.now()),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: Icon(
+                  Icons.schedule_outlined,
+                  size: 30,
+                  color: theme.colorScheme.onPrimaryContainer,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'Belum ada presensi hari ini',
+                style: theme.textTheme.titleLarge,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Mulai presensi Anda dengan mengambil foto masuk.',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
             ],
           ),
         ),
@@ -37,24 +67,35 @@ class AttendanceCard extends StatelessWidget {
     final completed = currentRecord.checkOutTime != null;
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(
+              DateFormat('EEEE, d MMMM y', 'id_ID').format(currentRecord.date),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 16),
             Row(
               children: [
                 Icon(
                   completed ? Icons.task_alt : Icons.login,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: theme.colorScheme.secondary,
                 ),
                 const SizedBox(width: 10),
-                Text(
-                  completed ? 'Presensi selesai' : 'Sudah masuk',
-                  style: Theme.of(context).textTheme.titleMedium,
+                Expanded(
+                  child: Text(
+                    completed ? 'Presensi selesai' : 'Sudah masuk',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
+            const Divider(),
+            const SizedBox(height: 20),
             _TimeRow(
               label: 'Jam masuk',
               value: timeFormat.format(currentRecord.checkInTime),
@@ -72,24 +113,37 @@ class AttendanceCard extends StatelessWidget {
               ),
             ],
             const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: _PhotoTile(
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final photos = [
+                  _PhotoTile(
                     label: 'Foto masuk',
                     path: currentRecord.checkInPhotoPath,
                   ),
-                ),
-                if (completed) ...[
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _PhotoTile(
+                  if (completed)
+                    _PhotoTile(
                       label: 'Foto pulang',
                       path: currentRecord.checkOutPhotoPath,
                     ),
-                  ),
-                ],
-              ],
+                ];
+                final stacked =
+                    constraints.maxWidth < 280 ||
+                    MediaQuery.textScalerOf(context).scale(14) > 20;
+                return Wrap(
+                  spacing: 12,
+                  runSpacing: 16,
+                  children: photos
+                      .map(
+                        (photo) => SizedBox(
+                          width: completed && !stacked
+                              ? (constraints.maxWidth - 12) / 2
+                              : constraints.maxWidth,
+                          child: photo,
+                        ),
+                      )
+                      .toList(),
+                );
+              },
             ),
           ],
         ),
@@ -106,12 +160,22 @@ class _TimeRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(label),
-        Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
-      ],
+    return SizedBox(
+      width: double.infinity,
+      child: Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        spacing: 16,
+        runSpacing: 4,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+          Text(value, style: Theme.of(context).textTheme.titleMedium),
+        ],
+      ),
     );
   }
 }
@@ -138,9 +202,10 @@ class _PhotoTile extends StatelessWidget {
             Text(label, style: Theme.of(context).textTheme.labelLarge),
             const SizedBox(height: 6),
             ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: AspectRatio(
-                aspectRatio: 4 / 3,
+              borderRadius: BorderRadius.circular(16),
+              child: SizedBox(
+                width: double.infinity,
+                height: 140 * MediaQuery.textScalerOf(context).scale(14) / 14,
                 child: AttendancePhoto(path: path),
               ),
             ),

@@ -12,17 +12,23 @@ class PhotoViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: const Color(0xFF18221D),
       appBar: AppBar(
         title: const Text('Foto presensi'),
-        backgroundColor: Colors.black,
+        backgroundColor: const Color(0xFF18221D),
         foregroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.white),
+        titleTextStyle: Theme.of(
+          context,
+        ).textTheme.titleMedium?.copyWith(color: Colors.white),
       ),
-      body: Center(
-        child: InteractiveViewer(
-          minScale: 0.8,
-          maxScale: 4,
-          child: AttendancePhoto(path: photoPath, fit: BoxFit.contain),
+      body: SafeArea(
+        child: Center(
+          child: InteractiveViewer(
+            minScale: 0.8,
+            maxScale: 4,
+            child: AttendancePhoto(path: photoPath, fit: BoxFit.contain),
+          ),
         ),
       ),
     );
@@ -79,17 +85,26 @@ class PhotoPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return ColoredBox(
-      color: Theme.of(context).colorScheme.surfaceContainerHighest,
-      child: const Center(
+      color: theme.colorScheme.surfaceContainerHighest,
+      child: Center(
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.broken_image_outlined, size: 36),
-              SizedBox(height: 8),
-              Text('Foto tidak tersedia', textAlign: TextAlign.center),
+              Icon(
+                Icons.image_not_supported_outlined,
+                size: 28,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Foto tidak tersedia',
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodySmall,
+              ),
             ],
           ),
         ),
